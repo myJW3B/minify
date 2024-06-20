@@ -4,11 +4,6 @@ namespace JW3B\core;
 
 class Minify {
 
-	public $dir;
-
-	public function __construct($dir){
-		$this->dir = $dir;
-	}
 	/*
 	*	@str = all the css in 1 string
 	*
@@ -64,8 +59,8 @@ class Minify {
 	*/
 	public function compress($type, $files, $file) {
 		$LastUpdate = $this->getLU($files);
-		if(is_file($this->dir.$file)){
-			$MainLast = filemtime($this->dir.$file);
+		if(is_file($file)){
+			$MainLast = filemtime($file);
 		} else { $updateF = 1; $MainLast = 0; }
 		if(isset($updateF) || $LastUpdate > $MainLast){
 			// files have been updated so update the minified file
@@ -95,14 +90,14 @@ class Minify {
 	public function getLU($files){
 		$LastUpdate = 0;
 		foreach($files as $v){
-			$ed = filemtime($this->dir.$v);
+			$ed = filemtime($v);
 			if($ed > $LastUpdate){ $LastUpdate = $ed; }
 		}
 		return $LastUpdate;
 	}
 
 	public function saveFile($file, $save){
-		$fp = fopen($this->dir.$file, 'w');
+		$fp = fopen($file, 'a');
 		flock($fp, LOCK_EX);
 		fwrite($fp, $save);
 		flock($fp, LOCK_UN);
@@ -119,7 +114,7 @@ class Minify {
 		$FileTop = "\n\n  Last Updated:: ".date ("F d Y H:i:s.", time())."\n\n  Files include::\n";
 		foreach($files as $v){
 			$FileTop .= "  ".$v."\n";
-			$cont .= is_file($this->dir.$v) ? file_get_contents($this->dir.$v)."\n" : '';
+			$cont .= is_file($v) ? file_get_contents($v)."\n" : '';
 		}
 		return ['con' => $cont, 'top' => $FileTop];
 	}
